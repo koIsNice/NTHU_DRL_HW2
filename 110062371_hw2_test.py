@@ -127,12 +127,6 @@ class Agent:
         return self.current_action
 
 
-# frame_to_skip = 4
-# length_of_side_of_square = 84
-# num_stack = 4
-# batch_size = 256
-# dir_path = ''
-# dir_agent_name = '110062371_hw2_data.py'
 
 # device = torch.device("cpu")
 
