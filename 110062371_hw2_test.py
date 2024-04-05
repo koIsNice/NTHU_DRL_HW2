@@ -52,6 +52,8 @@ class Agent:
         self.device = torch.device("cpu")
         self.length_of_side_of_square = 84
         self.stack_frames = None
+        self.counter = 0
+        self.current_action = 0
 
         self.learning_nn = DQN(input_channels=self.input_channels, output_dim=self.n_actions).to(self.device)
         self.target_nn = DQN(input_channels=self.input_channels, output_dim=self.n_actions).to(self.device)
@@ -110,14 +112,19 @@ class Agent:
         return state
 
     def act(self, observation:np.ndarray):
-        state = self.outer_frame_to_inner_frame(state=observation)
+        if self.counter == 0:
+            state = self.outer_frame_to_inner_frame(state=observation)
 
-        if self.stack_frames is None:
-            self.fill_stack_frames(state=state)
-        else:
-            self.add_frame(state=state)
+            if self.stack_frames is None:
+                self.fill_stack_frames(state=state)
+            else:
+                self.add_frame(state=state)
+            self.current_action = self.max_act(state=self.stack_frames)
 
-        return self.max_act(state=self.stack_frames)
+
+        self.counter = (self.counter + 1) % 4
+
+        return self.current_action
 
 
 # frame_to_skip = 4
@@ -133,8 +140,7 @@ class Agent:
 # env = JoypadSpace(env, COMPLEX_MOVEMENT)
 
 
-# state_dict = torch.load(dir_path + dir_agent_name)
-# agent = agent = Agent(input_channels=num_stack, length_of_side_of_square=length_of_side_of_square, n_actions=env.action_space.n, dir_name=dir_path + dir_agent_name, gamma=.9, num_stack=num_stack, device=device, state_dict=state_dict)
+# agent = agent = Agent()
 
 
 # done = True
@@ -146,8 +152,8 @@ class Agent:
 
 #     count = 0
 #     while True:
-#         if count == 0:
-#             action = agent.act(state=state)
+#         #if count == 0:
+#         action = agent.act(observation=state)
 #         state, reward, done, info = env.step(action)
 #         env.render()
 #         cu_reward += reward
