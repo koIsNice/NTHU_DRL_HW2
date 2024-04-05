@@ -56,7 +56,7 @@ class Agent:
         self.learning_nn = DQN(input_channels=self.input_channels, output_dim=self.n_actions).to(self.device)
         self.target_nn = DQN(input_channels=self.input_channels, output_dim=self.n_actions).to(self.device)
 
-        state_dict = torch.load('110062371_hw2_data.py')
+        state_dict = torch.load('110062371_hw2_data.py', map_location=torch.device('cpu'))
         self.learning_nn.load_state_dict(state_dict=state_dict)
         self.target_nn.load_state_dict(state_dict=state_dict)
 
